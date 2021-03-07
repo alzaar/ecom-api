@@ -7,3 +7,5 @@ package-lock.json
 
 # ENV. Config
 .env
+
+.gitignore
