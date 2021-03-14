@@ -6,7 +6,7 @@
   "scripts": {
     "build": "babel src -d lib",
     "start": "nodemon --exec babel-node src/server",
-    "test": "mocha --require @babel/register src/tests/ --exit",
+    "test": "mocha --recursive --require @babel/register src/tests/ --exit",
     "lint": "eslint"
   },
   "keywords": [],

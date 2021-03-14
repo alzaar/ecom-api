@@ -23,6 +23,7 @@ controller.getProduct = (req, res) => {
 }
 
 controller.createProduct = (req, res) => {
+    // Modify to include User id
     const newProduct = new Product({
         name: req.body.name,
         price: req.body.price,

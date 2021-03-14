@@ -1,7 +1,7 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../server'
-import Product from '../models/product'
+import server from '../../server'
+import Product from '../../models/product'
 import chaiDateString from 'chai-date-string'
 
 // Enable Chai Config when testing

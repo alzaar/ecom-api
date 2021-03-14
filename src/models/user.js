@@ -15,12 +15,6 @@ const User = mongoose.model('User', new Schema({
             message: (props) => 'Email validation failed'
         },
         date: { type: Date, default: Date.now },
-        previousOrders: [{
-            type: ObjectId, ref: 'Product' // default is []
-        }],
-        currentOrders: [{
-            type: ObjectId, ref: 'Product' // default is []
-        }]
     })
 )
 

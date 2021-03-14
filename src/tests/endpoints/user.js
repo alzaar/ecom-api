@@ -1,7 +1,7 @@
 import chai from 'chai'
 import chaiHttp from 'chai-http'
-import server from '../server'
-import User from '../models/user'
+import server from '../../server'
+import User from '../../models/user'
 import chaiDateString from 'chai-date-string'
 
 // Enable Chai Config when testing
@@ -44,8 +44,6 @@ describe('Users', (done) => {
                 res.body.data.should.have.property('password').to.be.a('string')
                 res.body.data.should.have.property('password').to.have.lengthOf.above(4)
                 res.body.data.should.have.property('email').to.be.a('string')
-                res.body.data.should.have.property('previousOrders').to.be.a('array')
-                res.body.data.should.have.property('currentOrders').to.be.a('array')
                 expect(res.body.data.date).to.be.a.dateString()
                 
                 done()
@@ -69,7 +67,7 @@ describe('Users', (done) => {
         })
     })
 
-    //  // Delete a user
+    // Delete a user
      describe('/DELETE products', () => {
         it('it should check delete functionality for a product', (done) => {
             const user = new User({
@@ -118,8 +116,6 @@ describe('Users', (done) => {
                     res.body.data.should.have.property('password').to.be.a('string')
                     res.body.data.should.have.property('password').to.have.lengthOf.above(4)
                     res.body.data.should.have.property('email').to.be.a('string')
-                    res.body.data.should.have.property('previousOrders').to.be.a('array')
-                    res.body.data.should.have.property('currentOrders').to.be.a('array')
                     expect(res.body.data.date).to.be.a.dateString()
 
                     done()
@@ -152,8 +148,6 @@ describe('Users', (done) => {
                     // Add diff password logic
                     res.body.data.should.have.property('email').to.be.a('string')
                     res.body.data.should.have.property('email').eql('test@mail.com')
-                    res.body.data.should.have.property('previousOrders').to.be.a('array')
-                    res.body.data.should.have.property('currentOrders').to.be.a('array')
                 done();
                 });
             });
