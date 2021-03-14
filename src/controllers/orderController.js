@@ -1,5 +1,4 @@
 import Order from '../models/order'
-import mongoose from 'mongoose'
 
 const controller = {}
 
