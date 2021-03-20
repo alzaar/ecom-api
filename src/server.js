@@ -70,8 +70,17 @@ app.route('/users/:user_id')
 
 // Order Controller
 app.route('/orders/:user_id')
-    .get(orderController.getOrders)
+    .get(orderController.getCurrentOrders)
     .put(orderController.updateCurrentOrders)
+    .delete(orderController.deleteCurrentOrders)
+
+app.route('/order/:user_id')
+    .get(orderController.getOrder)
+
+app.route('/past-orders/:user_id')
+    .get(orderController.getPreviousOrders)
+    .put(orderController.updatePreviousOrders)
+    .delete(orderController.deletePreviousOrders)
 
 // Start server and listen on PORT mentioned
 app.listen(process.env.PORT, () => console.log(
