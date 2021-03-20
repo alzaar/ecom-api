@@ -4,15 +4,15 @@ import server from '../../server'
 import Order from '../../models/order'
 import chaiDateString from 'chai-date-string'
 import User from '../../models/user'
+import Product from '../../models/product'
 
 // Enable Chai Config when testing
 chai.should()
-const expect = chai.expect
 chai.use(chaiDateString)
 chai.use(chaiHttp)
 
-//  ADD MORGAN LOGS and change env to test for this
-process.env.NODE_ENV = 'Test'
+// TODO
+// ADD MORGAN LOGS
 
 describe('Orders', (done) => {
     beforeEach((done) => {
@@ -23,9 +23,9 @@ describe('Orders', (done) => {
         })        
     })
 
-    // GET All Orders
-    describe('/GET All Orders', () => {
-        it('it should get all orders of user', (done) => {
+    // GET All Current Orders
+    describe('/GET All Current Orders', () => {
+        it('it should get all current orders of user', (done) => {
             new User({
                 username: 'test_user',
                 email: 'test@email.com',
@@ -41,12 +41,8 @@ describe('Orders', (done) => {
                         res.should.have.status(200)
                         res.body.should.be.a('object')
                         res.body.should.have.property('errors').eql(false)
-                        res.body.should.have.property('data').be.a('object')
-                        res.body.data.should.have.property('previousOrders').be.a('array')
-                        res.body.data.should.have.property('currentOrders').be.a('array')
-                        res.body.data.previousOrders.should.have.length(0)
-                        res.body.data.currentOrders.should.have.length(0)
-                        res.body.data.user.should.be.a('string')
+                        res.body.should.have.property('data').be.a('array')
+                        res.body.data.should.have.length(0)
                         done()
                     })
                 })
@@ -54,139 +50,250 @@ describe('Orders', (done) => {
         })
     })
 
-    // // Create a product
-    // describe('/POST Product', () => {
-    //     it('it should not create a product without product field details', (done) => {
-    //         const product = {
-    //             name: 'Random Book',
-    //             price: 45,
-    //             description: 'Book\'s description',
-    //             date: new Date()
-    //         }
+    // GET Current Order
+    describe('/GET Current Order', () => {
+        it('it should get current order of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                        currentOrders: [p._id]
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .get(`/order/${o.user}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(1)
+                            res.body.data[0].should.have.property('_id').eql(p._id.toString())
+                            done()
+                        })
+                    }) 
+                })
+            })
+        })
+    })
 
-    //         chai.request(server)
-    //         .post('/products')
-    //         .send(product)
-    //         .end((err, res) => {
-    //             res.should.have.status(201)
-    //             res.body.should.be.a('object')
-    //             res.body.should.have.property('errors').eql(false)
-    //             res.body.should.have.property('data')
-    //             res.body.data.should.be.a('object')
-    //             // Check product details
-    //             res.body.data.should.have.property('name').to.be.a('string')
-    //             res.body.data.should.have.property('_id').to.be.a('string')
-    //             res.body.data.should.have.property('price').to.be.a('number')
-    //             res.body.data.should.have.property('description').to.be.a('string')
-    //             expect(res.body.data.date).to.be.a.dateString()
-                
-    //             done()
-    //         })
-    //     })
-    // })
+    // GET Previous Orders
+    describe('/GET Previous Orders', () => {
+        it('it should get previous orders of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                        previousOrders: [p._id]
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .get(`/past-orders/${o.user}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(1)
+                            res.body.data[0].should.have.property('_id').eql(p._id.toString())
+                            done()
+                        })
+                    }) 
+                })
+            })
+        })
+    })
 
-    // // GET for all products - Test
-    // describe('/GET products', () => {
-    //     it('it should get all products', (done) => {
-    //         chai.request(server)
-    //         .get('/products')
-    //         .end((err, res) => {
-    //             res.should.have.status(200)
-    //             res.body.should.have.property('message').eql('OK')
-    //             res.body.data.should.be.a('array')
-    //             res.body.data.length.should.be.eql(0)
-    //             res.body.should.have.property('errors').eql(false)
-    //             done()
-    //         })
-    //     })
-    // })
+    // PUT Update Previous Orders
+    describe('/PUT Previous Orders', () => {
+        it('it should update previous orders of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .put(`/past-orders/${o.user}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(1)
+                            res.body.data[0].should.have.property('_id').eql(p._id.toString())
+                            done()
+                        })
+                    }) 
+                })
+            })
+        })
+    })
 
-    //  // Delete a Product
-    //  describe('/DELETE products', () => {
-    //     it('it should check delete functionality for a product', (done) => {
-    //         const product = new Product({
-    //             name: 'Random Book',
-    //             price: 45,
-    //             description: 'Book\'s description',
-    //             date: new Date()
-    //         })
+    // PUT Update Current Orders
+    describe('/PUT Current Orders', () => {
+        it('it should update current orders of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .put(`/orders/${o.user}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(1)
+                            res.body.data[0].should.have.property('_id').eql(p._id.toString())
+                            done()
+                        })
+                    }) 
+                })
+            })
+        })
+    })
 
-    //         product.save().then((p) => {
-    //             chai.request(server)
-    //             .delete(`/products/${p._id}`)
-    //             .send(p)
-    //             .end((err, res) => {
-    //                 res.should.have.status(200)
-    //                 res.body.should.be.a('object')
-    //                 res.body.should.have.property('errors').eql(false)
-    //                 res.body.should.have.a.property('message').eql('Deleted')
+    // POST Create Current Orders
+    describe('/POST Current Orders', () => {
+        it('it should create current orders of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .put(`/orders/${o.user}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(1)
+                            res.body.data[0].should.have.property('_id').eql(p._id.toString())
+                            done()
+                        })  
+                    })
+                })
+            })
+        })
+    })
 
-    //                 done()
-    //             })
-    //         })
-    //     })
-    // })
+    // DELETE Delete Current Orders
+    describe('/Delete Current Orders', () => {
+        it('it should Delete current orders of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                        currentOrders: [p._id]
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .delete(`/orders/${u._id}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(0)
+                            done()
+                        })
+                    })
+                })
+            })
+        })
+    })
 
-    // // GET Product based on id
-    // describe('/GET{id} products', () => {
-    //     it('it should get product based on id', (done) => {
-    //         const product = new Product({
-    //             name: 'Random Book',
-    //             price: 45,
-    //             description: 'Book\'s description',
-    //             date: new Date()
-    //         })
-    //         product.save().then((p) => {
-    //             chai.request(server)
-    //             .get(`/products/${p._id}`)
-    //             .send(p)
-    //             .end((err, res) => {
-    //                 res.should.have.status(200)
-    //                 res.body.should.be.a('object')
-    //                 res.body.should.have.property('errors').eql(false)
-    //                 res.body.should.have.property('data')
-    //                 res.body.data.should.be.a('object')
-    //                 // Check product details
-    //                 res.body.data.should.have.property('name').to.be.a('string')
-    //                 res.body.data.should.have.property('_id').to.be.a('string')
-    //                 res.body.data.should.have.property('price').to.be.a('number')
-    //                 res.body.data.should.have.property('description').to.be.a('string')
-    //                 expect(res.body.data.date).to.be.a.dateString()
-    //                 res.body.data.should.have.property('_id').eql(p.id)
-
-    //                 done()
-    //             })
-    //         })
-    //     })
-    // })
-
-    // // Update a Product
-    // describe('PUT/:id Product', () => {
-    //     it('it should UPDATE a product given the id', (done) => {
-    //         let product = new Product({
-    //             name: 'Random Book',
-    //             price: 45,
-    //             description: 'Book\'s description',
-    //         })
-
-    //         product.save().then((p) => {
-    //             chai.request(server)
-    //             .put(`/products/${p._id}`)
-    //             .send({ name: 'test12', description: 'test', price: 14 })
-    //             .end((err, res) => {
-    //                 res.should.have.status(200);
-    //                 res.body.should.be.a('object');
-    //                 res.body.should.have.a.property('message').eql('Updated')
-    //                 // // Check User details
-    //                 res.body.data.should.have.property('name').to.be.a('string')
-    //                 res.body.data.should.have.property('name').eql('test12')
-    //                 res.body.data.should.have.property('_id').to.be.a('string')
-    //                 res.body.data.should.have.property('price').to.be.a('number')
-    //                 res.body.data.should.have.property('price').eql(14)
-    //                 res.body.data.should.have.property('description').eql('test')
-    //             done()
-    //             })
-    //         })
-    //     })
-    // })
+    // DELETE Delete Previous Orders
+    describe('/Delete Previous Orders', () => {
+        it('it should Delete previous orders of a user', (done) => {
+            new User({
+                username: 'test_user',
+                email: 'test@email.com',
+                password: 'test123',
+            }).save().then((u) => {
+                new Product({
+                    "name": "PC",
+                    "description": "some",
+                    "price": 400
+                }).save().then((p) => {
+                    new Order({
+                        user: u._id,
+                        previousOrders: [p._id]
+                    }).save().then((o) => {
+                        chai.request(server)
+                        .delete(`/past-orders/${o.user}`)
+                        .send({ product_id: p._id })
+                        .end((err, res) => {
+                            res.should.have.status(200)
+                            res.body.should.be.a('object')
+                            res.body.should.have.property('errors').eql(false)
+                            res.body.should.have.property('message').eql('OK')
+                            res.body.should.have.property('data').be.a('array')
+                            res.body.data.should.have.length(0)
+                            done()
+                        })
+                    })
+                })
+            })
+        })
+    })
 })

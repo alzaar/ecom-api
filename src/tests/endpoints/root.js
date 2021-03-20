@@ -7,7 +7,6 @@ chai.should()
 chai.use(chaiHttp)
 
 //  ADD MORGAN LOGS and change env to test for this
-process.env.NODE_ENV = 'Test'
 
 describe('Summary for all endpoints', (done) => {
     describe('/_ Root Path', () => {

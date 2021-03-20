@@ -77,10 +77,11 @@ controller.updatePreviousOrders = async (req, res) => {
             
             orders.previousOrders.push(req.body.product_id)
             await orders.save()
+            const previousOrderProducts =  await Promise.all(orders.previousOrders.map(async (p) => await Product.findById(p._id)))
 
             res.status(200).send({
                 'message': 'OK',
-                'data': orders,
+                'data': previousOrderProducts,
                 'errors': false
             })
 
@@ -111,10 +112,11 @@ controller.updateCurrentOrders = async (req, res) => {
             
             orders.currentOrders.push(req.body.product_id)
             await orders.save()
+            const currentOrderProducts =  await Promise.all(orders.currentOrders.map(async (p) => await Product.findById(p._id)))
 
             res.status(200).send({
                 'message': 'OK',
-                'data': orders,
+                'data': currentOrderProducts,
                 'errors': false
             })
 
@@ -124,10 +126,11 @@ controller.updateCurrentOrders = async (req, res) => {
                 user: req.params.user_id,
                 currentOrders: [ req.body.product_id ]
             }).save()
+            const currentOrderProducts =  await Promise.all(newOrder.currentOrders.map(async (p) => await Product.findById(p._id)))
 
             res.status(201).send({
                 'message': 'OK',
-                'data': newOrder,
+                'data': currentOrderProducts,
                 'errors': false
             })
 
@@ -153,7 +156,7 @@ controller.deletePreviousOrders = async (req, res) => {
 
             res.status(200).send({
                 'message': 'OK',
-                'data': orders,
+                'data': orders.previousOrders,
                 'errors': false
             })
 
@@ -186,12 +189,12 @@ controller.deleteCurrentOrders = async (req, res) => {
 
             res.status(200).send({
                 'message': 'OK',
-                'data': orders,
+                'data': orders.currentOrders,
                 'errors': false
             })
 
         } else {
-            res.status(201).send({
+            res.status(200).send({
                 'message': 'No Such order placed!',
                 'data': [],
                 'errors': false

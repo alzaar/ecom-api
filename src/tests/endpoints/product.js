@@ -11,7 +11,6 @@ chai.use(chaiDateString)
 chai.use(chaiHttp)
 
 //  ADD MORGAN LOGS and change env to test for this
-process.env.NODE_ENV = 'Test'
 
 describe('Products', (done) => {
     beforeEach((done) => {
