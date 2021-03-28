@@ -3,7 +3,7 @@ import chaiHttp from 'chai-http'
 import server from '../../server'
 import User from '../../models/user'
 import chaiDateString from 'chai-date-string'
-
+import { dummyUser } from '../configData'
 // Enable Chai Config when testing
 chai.should()
 const expect = chai.expect
@@ -21,16 +21,10 @@ describe('Users', (done) => {
 
     // Create a User
     describe('/POST User', () => {
-        it('it should not create a user without user field details', (done) => {
-            const user = {
-                username: 'test',
-                email: 'test@test.com',
-                password: 'test13',
-            }
-
+        it('it should not create a user without any issue', (done) => {
             chai.request(server)
             .post('/users')
-            .send(user)
+            .send(dummyUser)
             .end((err, res) => {
                 res.should.have.status(201)
                 res.body.should.be.a('object')
@@ -44,7 +38,20 @@ describe('Users', (done) => {
                 res.body.data.should.have.property('password').to.have.lengthOf.above(4)
                 res.body.data.should.have.property('email').to.be.a('string')
                 expect(res.body.data.date).to.be.a.dateString()
-                
+                done()
+            })
+        })
+        // Test error handling
+        it('it should handle error when missing fields are present', (done) => {
+            chai.request(server)
+            .post(`/users`)
+            .send({})
+            .end((err, res) => {
+                res.should.have.status(400)
+                res.body.should.be.a('object')
+                res.body.should.have.property('errors').eql(true)
+                res.body.should.have.a.property('logError').eql('Invalid request body')
+                res.body.should.have.a.property('message').eql('Missing fields -- username, password or email')
                 done()
             })
         })
@@ -64,21 +71,19 @@ describe('Users', (done) => {
                 done()
             })
         })
+         // Test error handling
+         it('it should handle error missing jwt', (done) => {
+            done()
+            //Todo -- add after JWT addition
+        })
     })
 
     // Delete a user
-     describe('/DELETE products', () => {
-        it('it should check delete functionality for a product', (done) => {
-            const user = new User({
-                username: 'test',
-                email: 'test@test.com',
-                password: 'test13',
-            })
-
-            user.save().then((u) => {
+     describe('/DELETE User', () => {
+        it('it should check for user deletion', (done) => {
+            new User(dummyUser).save().then((u) => {
                 chai.request(server)
                 .delete(`/users/${u._id}`)
-                .send(u)
                 .end((err, res) => {
                     res.should.have.status(200)
                     res.body.should.be.a('object')
@@ -89,10 +94,21 @@ describe('Users', (done) => {
                 })
             })
         })
+        // Test error handling
+        it('it should handle error when invalid user id is present on DELETE', (done) => {
+            chai.request(server)
+            .delete('/users/gibberish')
+            .end((err, res) => {
+                res.should.have.status(400)
+                res.body.should.have.property('errors').eql(true)
+                res.body.should.have.property('message')
+                done()
+            })
+        })
     })
 
     // GET User based on id
-    describe('/GET{id} users', () => {
+    describe('/GET:id users', () => {
         it('it should get user based on id', (done) => {
             const user = new User({
                 username: 'test',

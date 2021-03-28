@@ -7,6 +7,16 @@
     "build": "babel src -d lib",
     "start": "nodemon --exec babel-node src/server",
     "test": "mocha --recursive --require @babel/register src/tests/ --require ./mocha.env --exit",
+    "test-models": "mocha --recursive --require @babel/register src/tests/models --require ./mocha.env --exit",
+    "test-endpoints": "mocha --recursive --require @babel/register src/tests/endpoints --require ./mocha.env --exit",
+    "test-endpoint-order": "mocha --recursive --require @babel/register src/tests/endpoints/order --require ./mocha.env --exit",
+    "test-endpoint-product": "mocha --recursive --require @babel/register src/tests/endpoints/product --require ./mocha.env --exit",
+    "test-endpoint-user": "mocha --recursive --require @babel/register src/tests/endpoints/user --require ./mocha.env --exit",
+    "test-endpoint-root": "mocha --recursive --require @babel/register src/tests/endpoints/root --require ./mocha.env --exit",
+    "test-model-order": "mocha --recursive --require @babel/register src/tests/model/order --require ./mocha.env --exit",
+    "test-model-product": "mocha --recursive --require @babel/register src/tests/model/product --require ./mocha.env --exit",
+    "test-model-user": "mocha --recursive --require @babel/register src/tests/model/user --require ./mocha.env --exit",
+    "test-coverage": "nyc mocha --recursive --require @babel/register src/tests/ --require ./mocha.env --exit",
     "lint": "eslint"
   },
   "keywords": [],
@@ -29,6 +39,7 @@
     "chai-http": "^4.3.0",
     "eslint": "^7.21.0",
     "mocha": "^8.3.1",
-    "nodemon": "^2.0.7"
+    "nodemon": "^2.0.7",
+    "nyc": "^15.1.0"
   }
 }

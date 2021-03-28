@@ -1,9 +1,16 @@
 import User from '../models/user'
-
+import mongoose from 'mongoose'
 const controller = {}
+const ObjectId = mongoose.Types.ObjectId
 
 controller.createUser = async (req, res) => {
     try {
+        if (!(req.body.username) || !(req.body.password) || !(req.body.email)) {
+            throw ({
+                logError: 'Invalid request body',
+                message: 'Missing fields -- username, password or email',
+            })
+        }
         const newUser = await new User({
             username: req.body.username,
             password: req.body.password,
@@ -16,7 +23,11 @@ controller.createUser = async (req, res) => {
             'errors': false
         })
     } catch (err) {
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: err.logError ? err.logError : `${err.reason}`,
+            message: err.message ? err.message : `User id in request is incorrect - ${req.params.user_id}`,
+        })
     }
 }
 
@@ -75,14 +86,18 @@ controller.updateUser = async (req, res) => {
 
 controller.deleteUser = async (req, res) => {
     try {
-        await User.findByIdAndDelete(req.params.user_id)
+        await User.findByIdAndDelete(new ObjectId(req.params.user_id))
 
         res.status(200).send({
             'message': 'Deleted',
             'errors': false
         })
     } catch (err) {
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: err.logError,
+            message: `${err.message} -- Invalid user id`,
+        })
     }
 }
 

@@ -8,7 +8,7 @@ const Product = mongoose.model('Product', new Schema({
         price: { type: Number, min: 0, required: true, default: 0 },
         description: { type: String, required: true },
         date: { type: Date, default: Date.now },
-        user: { type: ObjectId, ref: 'User' }
+        user: { type: ObjectId, ref: 'User', required: true } // required: true
     })
 )
 

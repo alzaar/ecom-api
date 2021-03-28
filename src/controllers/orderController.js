@@ -13,14 +13,17 @@ controller.getCurrentOrders = async (req, res) => {
         }
 
         res.status(200).send({
-            'message': 'OK',
-            'data': products,
-            'errors': false
+            message: `OK`,
+            data: products,
+            errors: false
         })
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 
@@ -40,8 +43,11 @@ controller.getPreviousOrders = async (req, res) => {
         })
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 
@@ -61,8 +67,11 @@ controller.getOrder = async (req, res) => {
         })
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 
@@ -96,8 +105,11 @@ controller.updatePreviousOrders = async (req, res) => {
         }
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 
@@ -137,8 +149,11 @@ controller.updateCurrentOrders = async (req, res) => {
         }
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 
@@ -170,8 +185,11 @@ controller.deletePreviousOrders = async (req, res) => {
         }
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 
@@ -203,8 +221,11 @@ controller.deleteCurrentOrders = async (req, res) => {
         }
 
     } catch (err) {
-        console.error(err)
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: `${err.reason}`,
+            message: `User id in request is incorrect - ${req.params.user_id}`
+        })
     }
 }
 

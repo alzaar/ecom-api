@@ -3,44 +3,82 @@ import Product from '../models/product'
 const controller = {}
 
 controller.getAllProducts = (req, res) => {
-    return Product.find({}).then((products) =>
-        res.status(200).send({
-            'message': 'OK',
-            'data': products,
-            'errors': false
+    try {
+        Product.find({}).then((products) =>
+            res.status(200).send({
+                'message': 'OK',
+                'data': products,
+                'errors': false
+            })
+        )
+    } catch (err) {
+        res.status(400).send({
+            errors: true,
+            logError: `${err}`,
+            details: err.errors,
         })
-    )
+    }
 }
 
-controller.getProduct = (req, res) => {
-    return Product.findById(req.params.product_id)
-        .then((product) => res.status(200).send({
-            'data': product,
-            'message': 'OK',
-            'errors': false
+controller.getProduct = async (req, res) => {
+    try {
+            await Product.findById(req.params.product_id)
+            .then((product) => res.status(200).send({
+                'data': product,
+                'message': 'OK',
+                'errors': false
+            })
+        )
+    } catch(err) {
+        res.status(400).send({
+            errors: true,
+            logError: `${err}`,
+            details: {
+                messageFormat: err.messageFormat,
+                kind: err.kind,
+                value: err.value,
+                reason: `${err.reason}`,
+            },
         })
-    )
+    }
 }
 
-controller.createProduct = (req, res) => {
+controller.createProduct = async (req, res) => {
     // Modify to include User id
-    const newProduct = new Product({
-        name: req.body.name,
-        price: req.body.price,
-        description: req.body.description
-    })
-    
-    return newProduct.save().then(
-        (product) => res.status(201).send({
+    try {
+        const product = await new Product({
+            name: req.body.name,
+            price: req.body.price,
+            description: req.body.description,
+            user: req.body.user,
+        }).save()
+        
+        // await newProduct.save()
+        res.status(201).send({
             'message': 'Created',
             'data': product,
             'errors': false
         })
-    )
+    } catch (err) {
+        res.status(400).send({
+            errors: true,
+            logError: `${err}`,
+            details: err.errors,
+        })
+    }
 }
 
 controller.updateProduct = async (req, res) => {
     try {
+        if (!(req.body.name) || !(req.body.price) || !(req.body.description)) {
+            throw ({
+                logError: 'Invalid request body',
+                messageFormat: 'JSON',
+                kind: 'Request body of JSON type needed',
+                value: 'NA',
+                reason: 'Missing price, name or description fields'
+            })
+        }
         await Product.findByIdAndUpdate(
             req.params.product_id,
             {
@@ -61,17 +99,38 @@ controller.updateProduct = async (req, res) => {
         })
 
     } catch (err) {
-        res.status(400).send(err.errors)
+        res.status(400).send({
+            errors: true,
+            logError: err.logError ? err.logError : `${err}`,
+            details: {
+                messageFormat: err.messageFormat,
+                kind: err.kind,
+                value: err.value,
+                reason: `${err.reason}`,
+            },
+        })
     }
 }
 
-controller.deleteProduct = (req, res) => {
-    return Product.findByIdAndDelete(req.params.product_id)
-        .then(() => res.status(200).send({
+controller.deleteProduct = async (req, res) => {
+    try {
+        await Product.findByIdAndDelete(req.params.product_id)
+        res.status(200).send({
             'message': 'Deleted',
             'errors': false
         })
-    )
+    } catch (err) {
+        res.status(400).send({
+            errors: true,
+            logError: `${err}`,
+            details: {
+                messageFormat: err.messageFormat,
+                kind: err.kind,
+                value: err.value,
+                reason: `${err.reason}`,
+            },
+        })
+    }
 }
 
 export default controller
