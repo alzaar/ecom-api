@@ -16,12 +16,13 @@ chai.use(chaiHttp)
 
 describe('Orders', () => {
     beforeEach((done) => {
-        const promises = [
-            Order.deleteMany({}),
-            User.deleteMany({}),
-        ]
-        Promise.all(promises)
-        .then(() => done())
+        // const promises = [
+        //     Order.deleteMany({}),
+        //     User.deleteMany({}),
+        // ]
+        // Promise.all(promises)
+        // .then(() => done())
+        done()
     })
 
     // GET All Current Orders
