@@ -14,13 +14,14 @@ chai.use(chaiHttp)
 // TODO
 // ADD MORGAN LOGS
 
-describe('Orders', (done) => {
+describe('Orders', () => {
     beforeEach((done) => {
-        Order.deleteMany({}, (err) => {
-            User.deleteMany({}, (err) => {
-                done()
-            })
-        })        
+        const promises = [
+            Order.deleteMany({}),
+            User.deleteMany({}),
+        ]
+        Promise.all(promises)
+        .then(() => done())
     })
 
     // GET All Current Orders
