@@ -20,8 +20,8 @@ describe('Orders', () => {
             Order.deleteMany({}),
             User.deleteMany({}),
         ]
-        Promise.all(promises)
-        .then(() => done())
+        return Promise.all(promises)
+        
     })
 
     // GET All Current Orders
