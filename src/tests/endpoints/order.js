@@ -15,6 +15,7 @@ chai.use(chaiHttp)
 // ADD MORGAN LOGS
 
 describe('Orders', () => {
+    this.timeout(15000)
     beforeEach(() => {
         const promises = [
             Order.deleteMany({}),
