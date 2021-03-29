@@ -15,7 +15,7 @@ chai.use(chaiHttp)
 // ADD MORGAN LOGS
 
 describe('Orders', () => {
-    beforeEach(async (done) => {
+    beforeEach(() => {
         const promises = [
             Order.deleteMany({}),
             User.deleteMany({}),
