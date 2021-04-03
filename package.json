@@ -7,16 +7,18 @@
     "build": "babel src -d lib",
     "start": "nodemon --exec babel-node src/server",
     "test": "mocha --recursive --require @babel/register src/tests/ --require ./mocha.env --exit",
-    "test-models": "mocha --recursive --require @babel/register src/tests/models --require ./mocha.env --exit",
-    "test-endpoints": "mocha --recursive --require @babel/register src/tests/endpoints --require ./mocha.env --exit",
-    "test-endpoint-order": "mocha --recursive --require @babel/register src/tests/endpoints/order --require ./mocha.env --exit",
-    "test-endpoint-product": "mocha --recursive --require @babel/register src/tests/endpoints/product --require ./mocha.env --exit",
-    "test-endpoint-user": "mocha --recursive --require @babel/register src/tests/endpoints/user --require ./mocha.env --exit",
-    "test-endpoint-root": "mocha --recursive --require @babel/register src/tests/endpoints/root --require ./mocha.env --exit",
-    "test-model-order": "mocha --recursive --require @babel/register src/tests/model/order --require ./mocha.env --exit",
-    "test-model-product": "mocha --recursive --require @babel/register src/tests/model/product --require ./mocha.env --exit",
-    "test-model-user": "mocha --recursive --require @babel/register src/tests/model/user --require ./mocha.env --exit",
-    "test-coverage": "nyc mocha --recursive --require @babel/register src/tests/ --require ./mocha.env --exit",
+    "test-watch": "mocha --recursive --require @babel/register src/tests/ --require ./mocha.env --watch --exit",
+    "test-models": "mocha --recursive --require @babel/register src/tests/models --require src/tests/hooks --require ./mocha.env --exit",
+    "test-endpoints": "mocha --recursive --require @babel/register src/tests/endpoints --require src/tests/hooks --require ./mocha.env --exit",
+    "test-endpoint-order": "mocha --recursive --require @babel/register src/tests/endpoints/order --require src/tests/hooks --require ./mocha.env --exit",
+    "test-endpoint-product": "mocha --recursive --require @babel/register src/tests/endpoints/product --require src/tests/hooks --require ./mocha.env --exit",
+    "test-endpoint-user": "mocha --recursive --require @babel/register src/tests/endpoints/user --require src/tests/hooks --require ./mocha.env --exit",
+    "test-endpoint-root": "mocha --recursive --require @babel/register src/tests/endpoints/root --require src/tests/hooks --require ./mocha.env --exit",
+    "test-model-order": "mocha --recursive --require @babel/register src/tests/models/order --require src/tests/hooks --require ./mocha.env --exit",
+    "test-model-product": "mocha --recursive --require @babel/register src/tests/models/product --require src/tests/hooks --require ./mocha.env --exit",
+    "test-model-user": "mocha --recursive --require @babel/register src/tests/models/user --require ./mocha.env --exit",
+    "test-config": "mocha --recursive --require @babel/register src/tests/config --require src/tests/hooks --require ./mocha.env --exit",
+    "test-coverage": "nyc mocha --recursive --require @babel/register src/tests/ --require src/tests/hooks --require ./mocha.env --exit",
     "lint": "eslint"
   },
   "keywords": [],
@@ -40,6 +42,7 @@
     "eslint": "^7.21.0",
     "mocha": "^8.3.1",
     "nodemon": "^2.0.7",
-    "nyc": "^15.1.0"
+    "nyc": "^15.1.0",
+    "sinon": "^10.0.0"
   }
 }
